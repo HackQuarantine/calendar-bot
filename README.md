@@ -8,6 +8,8 @@ Discord bot to distribute streaming tokens to speakers
 ./setup.sh
 ```
 
+Add your token to `creds.json`
+
 ## Deploy
 
 ```
