@@ -1,3 +1,6 @@
 {
-    "token": ""
+    "token": "",
+    "calendar_token": "",
+    "announcement_id": ,
+    "prefix": "?"
 }
