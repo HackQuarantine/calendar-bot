@@ -7,7 +7,7 @@ from . import scheduler
 
 def main():
     bot.loop.create_task(scheduler.check_schedule())
-    bot.run(config.creds['token'])
+    bot.run(config.creds['discord_token'])
 
 @bot.event
 async def on_message(message):
