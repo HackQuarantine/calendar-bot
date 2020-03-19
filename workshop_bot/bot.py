@@ -1,16 +1,13 @@
 import discord
 from discord.ext import commands
-
 from . import config
+import workshop_bot.setup
 
-bot = commands.Bot(command_prefix='?')
+from . import scheduler
 
 def main():
+    bot.loop.create_task(scheduler.check_schedule())
     bot.run(config.creds['token'])
-
-@bot.event
-async def on_ready():
-    print('Ready!')
 
 @bot.event
 async def on_message(message):
@@ -18,4 +15,4 @@ async def on_message(message):
         return
 
     await bot.process_commands(message)
-    await message.channel.send("No, fuck off")
+    await announcement_channel.send("hello")
