@@ -9,4 +9,10 @@ def check_calendar():
     hour = int(now.strftime('%H'))
     minute = int(now.strftime('%M'))
 
+    cal_day, cal_month, cal_year, cal_hour, cal_minute = get_next_event()
+
     return "Title", "Description"
+
+def get_next_event():
+
+    return day, month, year, hour, minute
