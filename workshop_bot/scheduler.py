@@ -2,6 +2,7 @@ import discord
 import asyncio
 from . import config
 from . import calendar
+from . import event
 import workshop_bot.setup
 
 async def check_schedule():
@@ -9,16 +10,26 @@ async def check_schedule():
     # Repeat every 60 seconds
     while True:
 
-        title, description = calendar.check_calendar()
-        await send_announcement(title, description)
+        cal_event = calendar.check_calendar()
+        if cal_event.announcement:
+            await send_announcement(event)
+        if cal_event.send_token:
+            await send_token(event)
 
         await asyncio.sleep(60)
 
-async def send_announcement(title, description):
+async def send_announcement(cal_event):
 
     announcement_channel = bot.get_channel(config.creds['announcement_id'])
-    embed = discord.Embed(title=title,
-                          description=description,
+    embed = discord.Embed(title=cal_event.title,
+                          description=cal_event.description,
                           colour=0x0E1328)
-    print("Making announcement for: {}, {}".format(title, description))
+    print("Making announcement for: {}, {}".format(cal_event.title, cal_event.description))
     await announcement_channel.send(embed=embed)
+
+async def send_token(cal_event):
+    # generate token
+    # turn organiser ID into user obj
+    # DM user with token
+
+    pass

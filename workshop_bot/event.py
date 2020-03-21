@@ -9,6 +9,9 @@ class Event:
         self.title = title
         self.description = description
         self.organiser_id = organiser_id
+        self.announcement = False
+        self.send_token = False
+        self.host_reminder = False
 
     def get_event_info(self):
         return self.title, self.description, self.organiser_id
