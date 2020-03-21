@@ -15,3 +15,7 @@ class Event:
 
     def get_event_info(self):
         return self.title, self.description, self.organiser_id
+
+    def generate_stream_key(self):
+        self.stream_key = "N/A"
+        return self.stream_key
