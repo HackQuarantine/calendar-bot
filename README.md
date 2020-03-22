@@ -1,6 +1,6 @@
 # Workshop Bot
 
-Discord bot to distribute streaming tokens to speakers
+Bot used to make announcements about workshops on the [schedule](https://hackquarantine.com/schedule)
 
 ## Installation
 
