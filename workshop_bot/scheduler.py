@@ -4,6 +4,7 @@ from . import config
 from . import calendar
 from . import event
 import workshop_bot.setup
+from workshop_bot.logging import logger
 
 async def check_schedule():
     await bot.wait_until_ready()
@@ -24,7 +25,7 @@ async def send_announcement(cal_event):
     embed = discord.Embed(title=cal_event.title,
                           description=cal_event.description,
                           colour=0x0E1328)
-    print("Making announcement for: {}, {}".format(cal_event.title, cal_event.description))
+    logger.info("Making announcement for: {}, {}".format(cal_event.title, cal_event.description))
     await announcement_channel.send(embed=embed)
 
 async def send_token(cal_event):
@@ -33,7 +34,7 @@ async def send_token(cal_event):
     log_channel = bot.get_channel(config.creds['stream_log_id'])
 
     if host is None:
-        print(f'Unable to get user object for \'{host}\', DMing stream_log channel')
+        logger.info(f'Unable to get user object for \'{host}\', DMing stream_log channel')
         await log_channel.send("Stream key could not be sent for event: {} at {:02d}:{:02d}".format(cal_event.title, cal_event.hour, cal_event.minute))
 
     embed = discord.Embed(title='Here is your Stream Key',

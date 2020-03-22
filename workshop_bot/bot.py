@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
+import datetime
 from . import config
 import workshop_bot.setup
-
 from . import scheduler
 
 def main():
