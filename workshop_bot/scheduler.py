@@ -34,7 +34,7 @@ async def send_token(cal_event):
     log_channel = bot.get_channel(config.creds['stream_log_id'])
 
     if host is None:
-        logger.info(f'Unable to get user object for \'{host}\', DMing stream_log channel')
+        logger.warn(f'Unable to get user object for \'{host}\', DMing stream_log channel')
         await log_channel.send("Stream key could not be sent for event: {} at {:02d}:{:02d}".format(cal_event.title, cal_event.hour, cal_event.minute))
 
     embed = discord.Embed(title='Here is your Stream Key',
