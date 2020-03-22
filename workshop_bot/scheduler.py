@@ -41,6 +41,12 @@ async def send_token(cal_event):
                           description=str(cal_event.generate_stream_key()),
                           colour=0x0E1328)
 
+    embed_instructions = discord.Embed(title="Instructions to get setup can be found here",
+                                       description="https://hackquarantine.com/workshops",
+                                       colour=0x0E1328)
+
     embed.set_footer(text='Any problems, contact @wrussell1999#6267')
     await host.send(embed=embed)
+    await host.send(embed=embed_instructions)
     await log_channel.send("Stream key send to {}".format(host.name))
+    logger.info("Stream key send to {}".format(cal_event.organiser_id))
