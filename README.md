@@ -1,6 +1,6 @@
-# Workshop Bot
+# Calendar Bot
 
-Discord bot to distribute streaming tokens to speakers
+Discord bot to announce upcoming events.
 
 ## Installation
 
@@ -15,5 +15,5 @@ Add your token to `creds.json`
 ## Deploy
 
 ```
-python -m workshop_bot
+python -m calendar_bot
 ```
