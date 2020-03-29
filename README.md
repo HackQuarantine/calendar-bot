@@ -1,6 +1,6 @@
-# Workshop Bot
+# Calendar Bot
 
-Bot used to make announcements about workshops on the [schedule](https://hackquarantine.com/schedule)
+Discord bot to announce upcoming events.
 
 ## Installation
 
@@ -15,5 +15,5 @@ Add your token to `creds.json`
 ## Deploy
 
 ```
-python -m workshop_bot
+python -m calendar_bot
 ```

@@ -1,4 +1,4 @@
 discord.py
 requests
 pprint
-dateutils
+dateutilsgit
