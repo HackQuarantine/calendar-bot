@@ -12,10 +12,8 @@ async def check_schedule():
     while True:
 
         cal_event = calendar.check_calendar()
-        if cal_event.announcement:
+        if cal_event: # If there's an announcement... fix
             await send_announcement(event)
-        if cal_event.send_token:
-            await send_token(event)
 
         await asyncio.sleep(60) # Wait for 10 minutes
 
