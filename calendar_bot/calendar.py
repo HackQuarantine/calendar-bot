@@ -38,11 +38,31 @@ def get_next_event():
         events = get_all_events()['items']
     except:
         pass
-        #fatal("Cannot fetch events from calendar/malformed response")
+        logger.warning("Cannot fetch events from calendar/malformed response")
     now = datetime.datetime()
     
     ## sort calendar
 
+    next_event = {}
+    for event in events:
+
+        try:
+            meta = json.loads(event['description'])
+        except:
+            bad_events += 1
+            logger.warning(f" - Malformed JSON in event '{event['summary']}' on '{event['start']['dateTime']}'")
+            continue
+        try:   
+            start = dateutil.parser.parse(event['start']['dateTime'])
+            print(start)
+        except:
+            logger.warning("F")
+        if start < now:
+            # Do stuff with it
+
+            event.organiser_id = meta['organiser_id']
+            event.organiser_name = meta['organiser']
+            pass
     
     
     day = ""
