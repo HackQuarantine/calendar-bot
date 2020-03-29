@@ -3,8 +3,8 @@ import asyncio
 from . import config
 from . import calendar
 from . import event
-import workshop_bot.setup
-from workshop_bot.logging import logger
+import calendar_bot.setup
+from calendar_bot.logging import logger
 
 async def check_schedule():
     await bot.wait_until_ready()
@@ -17,7 +17,7 @@ async def check_schedule():
         if cal_event.send_token:
             await send_token(event)
 
-        await asyncio.sleep(60)
+        await asyncio.sleep(60) # Wait for 10 minutes
 
 async def send_announcement(cal_event):
 
@@ -25,7 +25,7 @@ async def send_announcement(cal_event):
     embed = discord.Embed(title=cal_event.title,
                           description=cal_event.description,
                           colour=0x0E1328)
-    logger.info("Making announcement for: {}, {}".format(cal_event.title, cal_event.description))
+    logger.info(f"Making announcement for: {cal_event.title}, {cal_event.description}")
     await announcement_channel.send(embed=embed)
 
 async def send_token(cal_event):

@@ -1,9 +1,11 @@
 {
     "discord_token": "",
-    "calendar_token": "",
-    "calendar_id": "",
     "announcement_id": ,
     "stream_log_id": ,
     "guild_id": ,
-    "prefix": "?"
+    "prefix": "?",
+    "calendar": {
+        "token": "",
+        "id": ""
+    }
 }
