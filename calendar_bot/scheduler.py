@@ -1,8 +1,10 @@
 import discord
 import asyncio
+import datetime
 from . import config
 from . import calendar
 from . import event
+from . import stream
 import calendar_bot.setup
 from calendar_bot.logging import logger
 
@@ -10,12 +12,11 @@ async def check_schedule():
     await bot.wait_until_ready()
     # Repeat every 60 seconds
     while True:
+        now = datetime.datetime.now()
 
-        cal_event = calendar.check_calendar()
-        if cal_event: # If there's an announcement... fix
-            await send_announcement(event)
-
-        await asyncio.sleep(60) # Wait for 10 minutes
+        cal_event = calendar.get_next_event()
+        if cal_event.start == (now - datetime.timedelta(minutes=10)):
+            await send_announcement(cal_event)
 
 async def send_announcement(cal_event):
 
