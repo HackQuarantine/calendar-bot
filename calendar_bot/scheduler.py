@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import datetime
+import pytz
 from . import config
 from . import calendar
 from . import event
@@ -11,11 +12,12 @@ from calendar_bot.logging import logger
 async def check_schedule():
     await bot.wait_until_ready()
     # Repeat every 60 seconds
+    utc = pytz.UTC
     while True:
         now = datetime.datetime.now()
     
         cal_event = calendar.get_next_event(now)
-        if cal_event.start == (now - datetime.timedelta(minutes=10)):
+        if cal_event.start.replace(tzinfo=utc) > (now - datetime.timedelta(minutes=10)).replace(tzinfo=utc):
             await send_announcement(cal_event)
         await asyncio.sleep(60)
 

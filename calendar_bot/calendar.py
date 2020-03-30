@@ -18,7 +18,7 @@ def get_next_event(now):
     sorted_events = sort_calendar(events)
     cal_event = Event()
     next_event = sorted_events[0]
-
+    logger.info(pprint.pformat(next_event, indent=4))
     try:
         meta = json.loads(next_event['description'])
     except:
@@ -35,7 +35,7 @@ def get_next_event(now):
     except:
         logger.warning(
             f" - Missing required JSON fields in event '{next_event['summary']}' on '{next_event['start']['dateTime']}'")
-
+    logger.info(str(cal_event))
     return cal_event
 
 
@@ -58,5 +58,5 @@ def sort_calendar(events):
         if start.replace(tzinfo=utc) < now.replace(tzinfo=utc):
             sorted_events.remove(event)
 
-    logger.info(pprint.pformat(sorted_events, indent=4))
+    #logger.info(pprint.pformat(sorted_events, indent=4))
     return sorted_events
