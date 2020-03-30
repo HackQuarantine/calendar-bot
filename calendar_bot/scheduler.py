@@ -17,9 +17,11 @@ async def check_schedule():
         now = datetime.datetime.now()
     
         cal_event = calendar.get_next_event(now)
-        if cal_event.start.replace(tzinfo=utc) > (now - datetime.timedelta(minutes=10)).replace(tzinfo=utc):
+        start_time = cal_event.start.replace(tzinfo=utc)
+        if now.replace(tzinfo=utc) == (start_time - datetime.timedelta(minutes=10)).replace(tzinfo=utc):
             await send_announcement(cal_event)
-        await asyncio.sleep(60)
+            logger.debug("Send announcement")
+        await asyncio.sleep(1)
 
 async def send_announcement(cal_event):
 
@@ -28,27 +30,5 @@ async def send_announcement(cal_event):
                           description=cal_event.description,
                           colour=0x0E1328)
     logger.info(f"Making announcement for: {cal_event.title}, {cal_event.description}")
+    await announcement_channel.send(cal_event.get_announcement())
     await announcement_channel.send(embed=embed)
-
-async def send_token(cal_event):
-
-    host = bot.get_guild(config.creds['guild_id']).get_member(int(cal_event.organiser_id))
-    log_channel = bot.get_channel(config.creds['stream_log_id'])
-
-    if host is None:
-        logger.warn(f'Unable to get user object for \'{host}\', DMing stream_log channel')
-        await log_channel.send("Stream key could not be sent for event: {} at {:02d}:{:02d}".format(cal_event.title, cal_event.hour, cal_event.minute))
-
-    embed = discord.Embed(title='Here is your Stream Key',
-                          description=str(cal_event.generate_stream_key()),
-                          colour=0x0E1328)
-
-    embed_instructions = discord.Embed(title="Instructions to get setup can be found here",
-                                       description="https://hackquarantine.com/workshops",
-                                       colour=0x0E1328)
-
-    embed.set_footer(text='Any problems, contact @wrussell1999#6267')
-    await host.send(embed=embed)
-    await host.send(embed=embed_instructions)
-    await log_channel.send("Stream key send to {}".format(host.name))
-    logger.info("Stream key send to {}".format(cal_event.organiser_id))
