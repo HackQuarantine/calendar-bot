@@ -18,21 +18,32 @@ async def check_schedule():
         cal_event = calendar.get_next_event(now)
         current_time = now
         announcement_time = (cal_event.start - datetime.timedelta(minutes=10))
+        log_time = (cal_event.start - datetime.timedelta(minutes=30))
         
         if check_times(current_time, announcement_time):
             await send_announcement(cal_event)
-            logger.debug(f"Send announcement for {cal_event.title}, {cal_event.description} with {cal_event.organiser}")
+        elif check_times(current_time, log_time):
+            await send_log(cal_event)
         await asyncio.sleep(60)
 
 async def send_announcement(cal_event):
 
     announcement_channel = bot.get_channel(config.creds['announcement_id'])
+    log_channel = bot.get_channel(config.creds['stream_log_id'])
+
     embed = discord.Embed(title=cal_event.title,
                           description=cal_event.description,
                           colour=0x0E1328)
-    logger.info(f"Making announcement for: {cal_event.title}, {cal_event.description}")
+    log_msg = f"Making announcement for: {cal_event.title}, {cal_event.description}"
+    logger.info(log_msg)
+    await log_channel.send(log_msg)
     await announcement_channel.send(cal_event.get_announcement())
     await announcement_channel.send(embed=embed)
+
+async def send_log(cal_event):
+
+    log_channel = bot.get_channel(config.creds['stream_log_id'])
+    await log_channel.send(f"30 minutes until {cal_event.title}, {cal_event.description}.\n\Announcement due in 20 minutes!")
 
 def check_times(current_time, announcement_time):
     current_year = current_time.strftime("%Y")
