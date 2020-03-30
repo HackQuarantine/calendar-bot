@@ -1,7 +1,9 @@
 import datetime
 import dateutil.parser
+import pytz
 import requests
 import pprint
+import json
 from .event import Event
 from . import config
 from calendar_bot.logging import logger
@@ -13,10 +15,9 @@ def get_next_event(now):
         events = get_all_events()['items']
     except:
         logger.warning("Cannot fetch events from calendar/malformed response")
-
-    ## sort calendar
+    sorted_events = sort_calendar(events)
     cal_event = Event()
-    next_event = {}
+    next_event = sorted_events[0]
 
     try:
         meta = json.loads(next_event['description'])
@@ -47,5 +48,15 @@ def get_all_events():
     #pprint.pprint(r.json()['items'])
     return r.json()
 
-def sort_calendar():
-    pass
+def sort_calendar(events):
+    utc = pytz.UTC
+    now = datetime.datetime.now()
+
+    sorted_events = sorted(events, key=lambda x:dateutil.parser.parse(x['start']['dateTime']))
+    for event in events:
+        start = dateutil.parser.parse(event['start']['dateTime'])
+        if start.replace(tzinfo=utc) < now.replace(tzinfo=utc):
+            sorted_events.remove(event)
+
+    logger.info(pprint.pformat(sorted_events, indent=4))
+    return sorted_events

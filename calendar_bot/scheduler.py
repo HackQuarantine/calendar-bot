@@ -13,10 +13,11 @@ async def check_schedule():
     # Repeat every 60 seconds
     while True:
         now = datetime.datetime.now()
-
-        cal_event = calendar.get_next_event()
+    
+        cal_event = calendar.get_next_event(now)
         if cal_event.start == (now - datetime.timedelta(minutes=10)):
             await send_announcement(cal_event)
+        await asyncio.sleep(60)
 
 async def send_announcement(cal_event):
 
