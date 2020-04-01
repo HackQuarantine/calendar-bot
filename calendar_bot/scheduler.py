@@ -98,3 +98,9 @@ async def resume(ctx):
 @bot.command(description="Status of announcements")
 async def status(ctx):
     await log_channel.send(f"Send announcements: **{send_announcements}**\nSkip next: **{skip}**")
+
+@bot.command(description="Get next event")
+async def next_event(ctx):
+    now = datetime.datetime.now()
+    cal_event = calendar.get_next_event(now)
+    await log_channel.send(f"Next event is **{cal_event.title}** with **{cal_event.organiser}** at **{cal_event.start}** UTC")
