@@ -51,8 +51,8 @@ async def send_announcement(cal_event):
 
 
 async def send_log(cal_event):
-    if send_announcements:
-        await log_channel.send(f"30 minutes until {cal_event.title}, {cal_event.description}.\n\Announcement due in 20 minutes!")
+    if send_announcements and cal_event.type == "workshop" or  cal_event.type == "talk":
+        await log_channel.send(f"30 minutes until {cal_event.title}, {cal_event.description}.\n\nAnnouncement due in 20 minutes!")
 
 def check_times(current_time, announcement_time):
     current_year = current_time.strftime("%Y")
