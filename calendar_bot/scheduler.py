@@ -102,4 +102,5 @@ async def status(ctx):
 async def next_event(ctx):
     now = datetime.datetime.now()
     cal_event = calendar.get_next_event(now)
-    await log_channel.send(f"Next event is **{cal_event.title}** with **{cal_event.organiser}** at **{cal_event.start}** UTC")
+    start_date_utc = cal_event.start.astimezone(pytz.timezone('UTC')).strftime("%Y-%m-%d %H:%M:%S")
+    await log_channel.send(f"Next event is **{cal_event.title}** with **{cal_event.organiser}** at **{start_date_utc}** UTC")
