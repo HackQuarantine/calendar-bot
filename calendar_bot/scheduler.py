@@ -6,7 +6,6 @@ import pytz
 from . import config
 from . import calendar
 from . import event
-from . import stream
 import calendar_bot.setup
 from calendar_bot.logging import logger
 
