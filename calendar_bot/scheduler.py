@@ -32,7 +32,7 @@ async def check_schedule():
         await asyncio.sleep(60)
 
 async def send_announcement(cal_event):
-
+    global send_announcements
     if send_announcements:
         embed = discord.Embed(title=cal_event.title,
                             description=cal_event.description,
