@@ -33,7 +33,7 @@ async def check_schedule():
 
 async def send_announcement(cal_event):
     global send_announcements
-    if send_announcements:
+    if send_announcements and cal_event.type == "workshop" or cal_event.type == "talk":
         embed = discord.Embed(title=cal_event.title,
                             description=cal_event.description,
                             colour=0x0E1328)
