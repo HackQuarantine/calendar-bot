@@ -7,8 +7,8 @@ import calendar_bot.setup
 from calendar_bot.logging import logger
 
 def main():
-    bot.loop.create_task(scheduler.check_schedule())
     scheduler.setup()
+    bot.loop.create_task(scheduler.check_schedule())
     bot.run(config.creds['discord_token'])
 
 @bot.check
