@@ -9,7 +9,7 @@ from . import config
 from calendar_bot.logging import logger
 
 
-def get_next_event(now):
+def get_next_event(now, skip):
     now = datetime.datetime.now()
     try:
         events = get_all_events()['items']
@@ -17,7 +17,12 @@ def get_next_event(now):
         logger.warning("Cannot fetch events from calendar/malformed response")
     sorted_events = sort_calendar(events)
     cal_event = Event()
-    next_event = sorted_events[0]
+
+    if skip:
+        next_event = sorted_events[1]
+    else:
+        next_event = sorted_events[0]
+
     try:
         meta = json.loads(next_event['description'])
     except:

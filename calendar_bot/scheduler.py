@@ -20,7 +20,7 @@ async def check_schedule():
     while True:
         now = datetime.datetime.now()
 
-        cal_event = calendar.get_next_event(now)
+        cal_event = calendar.get_next_event(now, skip)
         current_time = now
         announcement_time = (cal_event.start - datetime.timedelta(minutes=10))
         log_time = (cal_event.start - datetime.timedelta(minutes=30))
@@ -107,6 +107,6 @@ async def status(ctx):
 @bot.command(description="Get next event")
 async def next_event(ctx):
     now = datetime.datetime.now()
-    cal_event = calendar.get_next_event(now)
+    cal_event = calendar.get_next_event(now, skip)
     start_date_utc = cal_event.start.astimezone(pytz.timezone('UTC')).strftime("%Y-%m-%d %H:%M:%S")
     await log_channel.send(f"Next event is **{cal_event.title}** with **{cal_event.organiser}** at **{start_date_utc}** UTC")
