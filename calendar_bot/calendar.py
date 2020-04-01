@@ -1,39 +1,57 @@
 import datetime
-from . import event
+import dateutil.parser
+import pytz
+import requests
+import pprint
+import json
+from .event import Event
+from . import config
+from calendar_bot.logging import logger
 
-def check_calendar():
+
+def get_next_event(now):
     now = datetime.datetime.now()
-    day = int(now.strftime('%d'))
-    month = int(now.strftime('%m'))
-    year = int(now.strftime('%Y'))
-    hour = int(now.strftime('%H'))
-    minute = int(now.strftime('%M'))
-    cal_event = get_next_event()
-
-    if day == cal_event.day and month == cal_event.month and year == cal_event.year:
-
-        if abs(hour - cal_event.hour) == 1 and abs(minute - cal_event.minute) == 0:
-            cal_event.send_token = True
-        elif abs(hour - cal_event.hour) <= 1 and abs(minute - cal_event.minute) == 30:
-            cal_event.host_reminder = True
-            cal_event.announcement = True
-
-        elif abs(hour - cal_event.hour) <=1 and abs(minute - cal_event.minute) == 10:
-            cal_event.announcement = True
+    try:
+        events = get_all_events()['items']
+    except:
+        logger.warning("Cannot fetch events from calendar/malformed response")
+    sorted_events = sort_calendar(events)
+    cal_event = Event()
+    next_event = sorted_events[0]
+    try:
+        meta = json.loads(next_event['description'])
+    except:
+        logger.warning(
+            f" - Malformed JSON in event '{next_event['summary']}' on '{next_event['start']['dateTime']}'")
+    try:
+        cal_event.start = dateutil.parser.parse(
+            next_event['start']['dateTime'])
+        cal_event.title = next_event['summary']
+        cal_event.description = meta['description']
+        cal_event.organiser_id = meta['organiser_id']
+        cal_event.organiser = meta['organiser']
+        cal_event.type = meta['type']
+    except:
+        logger.warning(
+            f" - Missing required JSON fields in event '{next_event['summary']}' on '{next_event['start']['dateTime']}'")
     return cal_event
 
 
-def get_next_event():
-    # google calendar part
-    day = ""
-    month = ""
-    year = ""
-    hour = ""
-    minute = ""
-    title = ""
-    description = ""
-    organiser_id = 0
-    
-    cal_event = event.Event(day, month, year, hour, minute, title, description, organiser_id)
-    
-    return cal_event
+def get_all_events():
+    id = config.creds['calendar']['id']
+    key = config.creds['calendar']['token']
+    r = requests.get(
+        f'https://www.googleapis.com/calendar/v3/calendars/{id}/events?key={key}')
+    return r.json()
+
+def sort_calendar(events):
+    utc = pytz.UTC
+    now = datetime.datetime.now()
+
+    sorted_events = sorted(events, key=lambda x:dateutil.parser.parse(x['start']['dateTime']))
+    for event in events:
+        start = dateutil.parser.parse(event['start']['dateTime'])
+        if start.replace(tzinfo=utc) < now.replace(tzinfo=utc):
+            sorted_events.remove(event)
+
+    return sorted_events

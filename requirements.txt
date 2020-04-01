@@ -1,2 +1,4 @@
 discord.py
-google-api-python-client
+requests
+pprint
+dateutils
