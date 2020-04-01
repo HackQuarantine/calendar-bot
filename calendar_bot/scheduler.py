@@ -10,6 +10,12 @@ from . import stream
 import calendar_bot.setup
 from calendar_bot.logging import logger
 
+
+def setup():
+    global send_announcements, skip
+    send_announcements = True
+    skip = False
+
 async def check_schedule():
     await bot.wait_until_ready()
     while True:
@@ -28,22 +34,26 @@ async def check_schedule():
 
 async def send_announcement(cal_event):
 
-    announcement_channel = bot.get_channel(config.creds['announcement_id'])
-    log_channel = bot.get_channel(config.creds['stream_log_id'])
+    if send_announcements:
+        embed = discord.Embed(title=cal_event.title,
+                            description=cal_event.description,
+                            colour=0x0E1328)
+        log_msg = f"Making announcement for: {cal_event.title}, {cal_event.description}"
+        logger.info(log_msg)
+        await log_channel.send(log_msg)
+        await announcement_channel.send(cal_event.get_announcement())
+        await announcement_channel.send(embed=embed)
+    elif not send_announcements and skip:
+        send_announcements = True
+        skip = False
+        await log_channel.send("Announcement skipped but future ones resumed")
+    else:
+        await log_channel.send("Announcement skipped")
 
-    embed = discord.Embed(title=cal_event.title,
-                          description=cal_event.description,
-                          colour=0x0E1328)
-    log_msg = f"Making announcement for: {cal_event.title}, {cal_event.description}"
-    logger.info(log_msg)
-    await log_channel.send(log_msg)
-    await announcement_channel.send(cal_event.get_announcement())
-    await announcement_channel.send(embed=embed)
 
 async def send_log(cal_event):
-
-    log_channel = bot.get_channel(config.creds['stream_log_id'])
-    await log_channel.send(f"30 minutes until {cal_event.title}, {cal_event.description}.\n\Announcement due in 20 minutes!")
+    if send_announcements:
+        await log_channel.send(f"30 minutes until {cal_event.title}, {cal_event.description}.\n\Announcement due in 20 minutes!")
 
 def check_times(current_time, announcement_time):
     current_year = current_time.strftime("%Y")
@@ -65,3 +75,26 @@ def check_times(current_time, announcement_time):
             return False
     else:
         return False
+
+@bot.command(description="Stop next calendar event!")
+async def skip_next(ctx):
+    send_announcements = False
+    skip = True
+    await log_channel.send("Next event announcement cancelled")
+
+
+@bot.command(description="Pause the announcements!")
+async def pause(ctx):
+    send_announcements = False
+    await log_channel.send("Announcements paused")
+
+
+@bot.command(description="Resume the announcements")
+async def resume(ctx):
+    send_announcements = True
+    await log_channel.send("Announcements resumed")
+
+
+@bot.command(description="Status of announcements")
+async def status(ctx):
+    await log_channel.send(f"Send announcements: **{send_announcements}**\nSkip next: **{skip}**")

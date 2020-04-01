@@ -1,6 +1,7 @@
 import datetime
 import random
 import calendar_bot.setup
+from . import config
 
 class Event:
 
