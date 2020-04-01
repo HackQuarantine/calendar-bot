@@ -24,7 +24,8 @@ async def check_schedule():
         current_time = now
         announcement_time = (cal_event.start - datetime.timedelta(minutes=10))
         log_time = (cal_event.start - datetime.timedelta(minutes=30))
-        
+        logger.debug(f'send_announcements:{send_announcements}')
+        logger.debug(f'skip:{skip}')
         if check_times(current_time, announcement_time):
             await send_announcement(cal_event)
         elif check_times(current_time, log_time):
@@ -32,7 +33,7 @@ async def check_schedule():
         await asyncio.sleep(60)
 
 async def send_announcement(cal_event):
-    global send_announcements
+    global send_announcements, skip
     if send_announcements and cal_event.type == "workshop" or cal_event.type == "talk":
         embed = discord.Embed(title=cal_event.title,
                             description=cal_event.description,
@@ -51,6 +52,7 @@ async def send_announcement(cal_event):
 
 
 async def send_log(cal_event):
+    global send_announcements
     if send_announcements and cal_event.type == "workshop" or  cal_event.type == "talk":
         await log_channel.send(f"30 minutes until {cal_event.title}, {cal_event.description}.\n\nAnnouncement due in 20 minutes!")
 
@@ -75,8 +77,9 @@ def check_times(current_time, announcement_time):
     else:
         return False
 
-@bot.command(description="Stop next calendar event!")
-async def skip_next(ctx):
+@bot.command(description="Skip next calendar event announcement!")
+async def skip(ctx):
+    global send_announcements, skip
     send_announcements = False
     skip = True
     await log_channel.send("Next event announcement cancelled")
@@ -84,13 +87,16 @@ async def skip_next(ctx):
 
 @bot.command(description="Pause the announcements!")
 async def pause(ctx):
+    global send_announcements
     send_announcements = False
     await log_channel.send("Announcements paused")
 
 
 @bot.command(description="Resume the announcements")
 async def resume(ctx):
+    global send_announcements, skip
     send_announcements = True
+    skip = False
     await log_channel.send("Announcements resumed")
 
 
