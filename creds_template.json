@@ -8,5 +8,6 @@
         "token": "",
         "id": ""
     },
-    "admin_ids" : []
+    "admin_ids" : [],
+    "twitch_id": ,
 }

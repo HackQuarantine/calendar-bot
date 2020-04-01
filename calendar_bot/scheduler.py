@@ -25,11 +25,14 @@ async def check_schedule():
         current_time = now
         announcement_time = (cal_event.start - datetime.timedelta(minutes=10))
         log_time = (cal_event.start - datetime.timedelta(minutes=30))
+        stream_time = (cal_event.start - datetime.timedelta(munute=5)) 
         
         if check_times(current_time, announcement_time):
             await send_announcement(cal_event)
         elif check_times(current_time, log_time):
             await send_log(cal_event)
+        elif check_times(current_time, stream_time):
+            stream.change_stream_title(cal_event.title)
         await asyncio.sleep(60)
 
 async def send_announcement(cal_event):

@@ -2,3 +2,4 @@ discord.py
 requests
 pprint
 dateutils
+twitch-python
