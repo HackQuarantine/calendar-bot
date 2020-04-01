@@ -19,7 +19,7 @@ class Event:
 
 
     def get_announcement(self):
-        if type == "workshop" or "talk":
+        if type == "workshop" or type == "talk":
             if self.organiser_discord_name:
                 return f"{self.get_message_start()} We have @{self.organiser_nick} giving a {self.type} on '{self.title}' in 10 minutes on Twitch.tv! Head over and check it out!\nhttps://hackquarantine.com/stream"
             elif self.organiser:
