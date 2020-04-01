@@ -20,11 +20,11 @@ class Event:
     def get_announcement(self):
         if type == "workshop" or "talk":
             if self.organiser_discord_name:
-                return f"Hey @here! We have @{self.organiser_nick} giving a {self.type} on '{self.title}' in 10 minutes on Twitch.tv! Head over and check it out!\nhttps://hackquarantine.com/stream"
+                return f"{self.get_message_start()} We have @{self.organiser_nick} giving a {self.type} on '{self.title}' in 10 minutes on Twitch.tv! Head over and check it out!\nhttps://hackquarantine.com/stream"
             elif self.organiser:
                 return f"{self.get_message_start()} We have {self.organiser} giving a {self.type} on '{self.title}' in 10 minutes on `Twitch.tv`! Head over and check it out!\nhttps://hackquarantine.com/stream"
             else: 
-                return f"Hey @here! We have a {self.type} on '{self.title}' in 10 minutes on Twitch.tv!\n\nHead over and check it out!\n\nhttps://hackquarantine.com/stream"
+                return f"{self.get_message_start()} We have a {self.type} on '{self.title}' in 10 minutes on Twitch.tv!\n\nHead over and check it out!\n\nhttps://hackquarantine.com/stream"
 
     def get_discord_nick(self):
         self.organiser_discord_name = bot.get_guild(config.creds['guild_id']).get_member(int(self.organiser_id))
