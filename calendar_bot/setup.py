@@ -9,5 +9,10 @@ from calendar_bot.logging import logger
 
 @bot.event
 async def on_ready():
-    logger.info('Ready!')
+    global announcement_channel, log_channel
+
+    builtins.log_channel = bot.get_channel(config.creds['stream_log_id'])
+    builtins.announcement_channel = bot.get_channel(config.creds['announcement_id'])
+
+    logger.info('Bot Online!')
     
