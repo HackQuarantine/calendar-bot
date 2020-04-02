@@ -20,10 +20,10 @@ async def check_schedule():
     while True:
         now = datetime.datetime.now()
 
-        cal_event = calendar.get_next_event(now)
+        cal_event = calendar.get_next_event(now, skip)
         current_time = now
         announcement_time = (cal_event.start - datetime.timedelta(minutes=10))
-        log_time = (cal_event.start - datetime.timedelta(minutes=30))
+        log_time = (cal_event.start - datetime.timedelta(minutes=20))
         logger.debug(f'send_announcements:{send_announcements}')
         logger.debug(f'skip:{skip}')
         if check_times(current_time, announcement_time):
@@ -35,26 +35,30 @@ async def check_schedule():
 async def send_announcement(cal_event):
     global send_announcements, skip
     if send_announcements and cal_event.type == "workshop" or cal_event.type == "talk":
-        embed = discord.Embed(title=cal_event.title,
-                            description=cal_event.description,
-                            colour=0x0E1328)
-        log_msg = f"Making announcement for: {cal_event.title}, {cal_event.description}"
-        logger.info(log_msg)
-        await log_channel.send(log_msg)
-        await announcement_channel.send(cal_event.get_announcement())
-        await announcement_channel.send(embed=embed)
-    elif not send_announcements and skip:
+        await make_announcement(cal_event)
+    elif not send_announcements and skip and cal_event.type == "workshop" or cal_event.type == "talk":
         send_announcements = True
         skip = False
+        await make_announcement(cal_event)
         await log_channel.send("Announcement skipped but future ones resumed")
     else:
         await log_channel.send("Announcement skipped")
 
 
+async def make_announcement(cal_event):
+        embed = discord.Embed(title=cal_event.title,
+                        description=cal_event.description,
+                        colour=0x0E1328)
+        log_msg = f"Making announcement for: {cal_event.title}, {cal_event.description}"
+        logger.info(log_msg)
+        await log_channel.send(log_msg)
+        await announcement_channel.send(cal_event.get_announcement())
+        await announcement_channel.send(embed=embed)
+
 async def send_log(cal_event):
     global send_announcements
     if send_announcements and cal_event.type == "workshop" or  cal_event.type == "talk":
-        await log_channel.send(f"30 minutes until {cal_event.title}, {cal_event.description}.\n\nAnnouncement due in 20 minutes!")
+        await log_channel.send(f"20 minutes until {cal_event.title}, {cal_event.description}.\n\nAnnouncement due in 10 minutes!")
 
 def check_times(current_time, announcement_time):
     current_year = current_time.strftime("%Y")
@@ -107,6 +111,6 @@ async def status(ctx):
 @bot.command(description="Get next event")
 async def next_event(ctx):
     now = datetime.datetime.now()
-    cal_event = calendar.get_next_event(now)
+    cal_event = calendar.get_next_event(now, skip)
     start_date_utc = cal_event.start.astimezone(pytz.timezone('UTC')).strftime("%Y-%m-%d %H:%M:%S")
     await log_channel.send(f"Next event is **{cal_event.title}** with **{cal_event.organiser}** at **{start_date_utc}** UTC")
