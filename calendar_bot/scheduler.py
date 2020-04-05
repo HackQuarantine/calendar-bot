@@ -34,7 +34,7 @@ async def check_schedule():
 
 async def send_announcement(cal_event):
     global send_announcements, skip
-    if send_announcements and cal_event.type == "workshop" or cal_event.type == "talk":
+    if send_announcements and cal_event.type == "workshop" or cal_event.type == "talk" or cal_event.type == "ceremony":
         await make_announcement(cal_event)
     elif not send_announcements and skip and cal_event.type == "workshop" or cal_event.type == "talk":
         send_announcements = True
