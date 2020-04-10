@@ -34,9 +34,9 @@ async def check_schedule():
 
 async def send_announcement(cal_event):
     global send_announcements, skip
-    if send_announcements and cal_event.type == "workshop" or cal_event.type == "talk":
+    if send_announcements and cal_event.type == "workshop" or cal_event.type == "talk" or cal_event.type == "partner-workshop":
         await make_announcement(cal_event)
-    elif not send_announcements and skip and cal_event.type == "workshop" or cal_event.type == "talk":
+    elif not send_announcements and skip and cal_event.type == "workshop" or cal_event.type == "talk" or cal_event.type == "partner-workshop":
         send_announcements = True
         skip = False
         await make_announcement(cal_event)
@@ -57,7 +57,7 @@ async def make_announcement(cal_event):
 
 async def send_log(cal_event):
     global send_announcements
-    if send_announcements and cal_event.type == "workshop" or  cal_event.type == "talk":
+    if send_announcements and cal_event.type == "workshop" or cal_event.type == "talk" or cal_event.type == "partner-workshop":
         await log_channel.send(f"20 minutes until {cal_event.title}, {cal_event.description}.\n\nAnnouncement due in 10 minutes!")
 
 def check_times(current_time, announcement_time):
