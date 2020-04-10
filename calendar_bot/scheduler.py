@@ -46,14 +46,14 @@ async def send_announcement(cal_event):
 
 
 async def make_announcement(cal_event):
-        embed = discord.Embed(title=cal_event.title,
-                        description=cal_event.description,
-                        colour=0x0E1328)
-        log_msg = f"Making announcement for: {cal_event.title}, {cal_event.description}"
-        logger.info(log_msg)
-        await log_channel.send(log_msg)
-        await announcement_channel.send(cal_event.get_announcement())
-        await announcement_channel.send(embed=embed)
+    embed = discord.Embed(title=cal_event.title,
+                    description=cal_event.description,
+                    colour=0x0E1328)
+    log_msg = f"Making announcement for: {cal_event.title}, {cal_event.description}"
+    logger.info(log_msg)
+    await log_channel.send(log_msg)
+    await announcement_channel.send(cal_event.get_announcement())
+    await announcement_channel.send(embed=embed)
 
 async def send_log(cal_event):
     global send_announcements
