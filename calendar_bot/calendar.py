@@ -33,7 +33,7 @@ def get_next_event(now, skip):
             next_event['start']['dateTime'])
         cal_event.title = next_event['summary']
         cal_event.description = meta['description']
-        cal_event.organiser_id = meta['organiser_id']
+        cal_event.organiser_id = ''
         cal_event.organiser = meta['organiser']
         cal_event.type = meta['type']
     except:
